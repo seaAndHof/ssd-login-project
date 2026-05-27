@@ -38,8 +38,6 @@
 
 ### 3.6 Countermeasures against session hijacking
 
-### 3.7 Continuous integration and demonstration
-
 ## 4. Conclusion
 
 ## 5. Sources

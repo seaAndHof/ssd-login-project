@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LoginPortal</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <nav>
+        <a asp-page="/Index">Home</a>
+        @if (Context.Session.GetString("user") is null)
+        {
+            <a asp-page="/Login">Login</a>
+        }
+        else
+        {
+            <a asp-page="/Logout">Logout</a>
+        }
+    </nav>
+    <main>
+        @RenderBody()
+    </main>
+</body>
+</html>
