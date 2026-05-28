@@ -18,12 +18,15 @@ Run the 'dotnet ef database update' command to get the database up and running.
 ### 2.1 Federated authentication: OAuth2 and OpenID Connect
 
 ### 2.2 Cryptographic primitives: password hashing and JWT signing
-This project uses EF Core identity to manage users. EF Core Identity automatically hashses any passwords using
-HMAC-SHA256 and uses a 128 bit random salt. This way no passwords are ever stored in plain text, and password sent
-through HTTPS are encrypted.
+This project uses EF Core identity to manage users. EF Core Identity automatically hashses any passwords using the
+PBKDF2 algorithm with the HMAC-SHA256 function and uses a 128 bit random salt. This way no passwords are ever stored
+in plain text, and password sent through HTTPS are encrypted.
 
 Any authenticated user gets sent a JWT token with claims through the HTTPS respone to their browser,
 which is stored as a cookie named "jwt". This cookie expires after 1 hour, prompting the user to log in again.
+
+For any required endpoints where the backend needs to authorize the caller, the JWT is sent in the header as a bearer
+token. The backend then validates it and returns the relevant response.
 
 ### 2.3 Zero Trust architecture
 
@@ -36,7 +39,8 @@ In this project this is done using claims that exist within the JWT, which the f
 that the authenticated user has.
 
 Any requests to the backend are also being role checked and authorizing whether or not the user has permission to
-access the attempted endpoint. Access denied is shown with a 403 Forbidden error.
+access the attempted endpoint. Unauthorized users will recieve a 401 Unauthorized response while unauthenticated users 
+will recieve a 403 Forbidden response.
 
 ### 2.6 Threat modeling the login flow (STRIDE)
 
