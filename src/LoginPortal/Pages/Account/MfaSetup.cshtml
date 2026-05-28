@@ -1,0 +1,39 @@
+@page
+@model LoginPortal.Pages.Account.MfaSetupModel
+@{
+    ViewData["Title"] = "Enable two-factor authentication";
+}
+
+<h1>Enable two-factor authentication</h1>
+
+@if (Model.AlreadyEnabled)
+{
+    <p>Two-factor authentication is already enabled on this account.</p>
+}
+else if (Model.Setup is not null)
+{
+    <p>Add this account to your authenticator app, then enter the 6-digit code to confirm.</p>
+
+    <h3>Option 1: scan the URI as a QR code</h3>
+    <pre>@Model.Setup.OtpauthUri</pre>
+
+    <h3>Option 2: type the secret in manually</h3>
+    <pre>@Model.Setup.Secret</pre>
+
+    @if (Model.ErrorMessage is not null)
+    {
+        <p class="error">@Model.ErrorMessage</p>
+    }
+
+    <form method="post">
+        <label>
+            Code
+            <input asp-for="Code" autocomplete="one-time-code" inputmode="numeric" autofocus />
+        </label>
+        <button type="submit">Confirm</button>
+    </form>
+}
+else
+{
+    <p class="error">Unable to load MFA setup. Are you signed in?</p>
+}

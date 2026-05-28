@@ -1,0 +1,22 @@
+@page
+@model LoginPortal.Pages.Account.MfaModel
+@{
+    ViewData["Title"] = "Two-factor authentication";
+}
+
+<h1>Two-factor authentication</h1>
+
+<p>Enter the 6-digit code from your authenticator app.</p>
+
+@if (Model.ErrorMessage is not null)
+{
+    <p class="error">@Model.ErrorMessage</p>
+}
+
+<form method="post">
+    <label>
+        Code
+        <input asp-for="Code" autocomplete="one-time-code" inputmode="numeric" autofocus />
+    </label>
+    <button type="submit">Verify</button>
+</form>
