@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace LoginPortal.Data;
+namespace LoginPortal.Backend.Data;
 
 public class ApplicationDbContext : IdentityDbContext
 {

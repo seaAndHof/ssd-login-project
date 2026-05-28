@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+using LoginPortal.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -6,13 +6,11 @@ namespace LoginPortal.Pages;
 
 public class SignupModel : PageModel
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly AuthService _authService;
 
-    public SignupModel(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    public SignupModel(AuthService authService)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
+        _authService = authService;
     }
 
     [BindProperty] public string Email { get; set; } = "";
@@ -31,18 +29,20 @@ public class SignupModel : PageModel
             return Page();
         }
 
-        var user = new IdentityUser { UserName = Username, Email = Email };
-        var result = await _userManager.CreateAsync(user, Password);
+        var result = await _authService.SignupAsync(Email, Username, Password);
 
         if (result.Succeeded)
         {
-            await _signInManager.SignInAsync(user, isPersistent: false);
+            Response.Cookies.Append("jwt", result.Token!, new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddHours(1)
+            });
             return RedirectToPage("/Index");
         }
 
-        foreach (var error in result.Errors)
-            Errors.Add(error.Description);
-
+        Errors.AddRange(result.Errors);
         return Page();
     }
 }

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+using LoginPortal.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -6,11 +6,11 @@ namespace LoginPortal.Pages;
 
 public class LoginModel : PageModel
 {
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly AuthService _authService;
 
-    public LoginModel(SignInManager<IdentityUser> signInManager)
+    public LoginModel(AuthService authService)
     {
-        _signInManager = signInManager;
+        _authService = authService;
     }
 
     [BindProperty] public string Username { get; set; } = "";
@@ -21,12 +21,20 @@ public class LoginModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var result = await _signInManager.PasswordSignInAsync(Username, Password, isPersistent: false, lockoutOnFailure: false);
+        var result = await _authService.LoginAsync(Username, Password);
 
         if (result.Succeeded)
+        {
+            Response.Cookies.Append("jwt", result.Token!, new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddHours(1)
+            });
             return RedirectToPage("/Index");
+        }
 
-        ErrorMessage = "Invalid username or password.";
+        ErrorMessage = result.Errors.FirstOrDefault() ?? "Invalid username or password.";
         return Page();
     }
 }
