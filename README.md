@@ -6,6 +6,11 @@
 
 ---
 
+## First Run
+To run this project the first time, you wont get it working without setting up the database.
+
+Run the 'dotnet ef database update' command to get the database up and running.
+
 ## 1. Introduction and problem
 
 ## 2. Theory
@@ -13,6 +18,12 @@
 ### 2.1 Federated authentication: OAuth2 and OpenID Connect
 
 ### 2.2 Cryptographic primitives: password hashing and JWT signing
+This project uses EF Core identity to manage users. EF Core Identity automatically hashses any passwords using
+HMAC-SHA256 and uses a 128 bit random salt. This way no passwords are ever stored in plain text, and password sent
+through HTTPS are encrypted.
+
+Any authenticated user gets sent a JWT token with claims through the HTTPS respone to their browser,
+which is stored as a cookie named "jwt". This cookie expires after 1 hour, prompting the user to log in again.
 
 ### 2.3 Zero Trust architecture
 

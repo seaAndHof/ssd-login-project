@@ -4,24 +4,32 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace LoginPortal.Pages;
 
-public class LoginModel : PageModel
+public class SignupModel : PageModel
 {
     private readonly AuthService _authService;
 
-    public LoginModel(AuthService authService)
+    public SignupModel(AuthService authService)
     {
         _authService = authService;
     }
 
+    [BindProperty] public string Email { get; set; } = "";
     [BindProperty] public string Username { get; set; } = "";
     [BindProperty] public string Password { get; set; } = "";
-    public string? ErrorMessage { get; set; }
+    [BindProperty] public string ConfirmPassword { get; set; } = "";
+    public List<string> Errors { get; set; } = [];
 
     public void OnGet() { }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var result = await _authService.LoginAsync(Username, Password);
+        if (Password != ConfirmPassword)
+        {
+            Errors.Add("Passwords do not match.");
+            return Page();
+        }
+
+        var result = await _authService.SignupAsync(Email, Username, Password);
 
         if (result.Succeeded)
         {
@@ -34,7 +42,7 @@ public class LoginModel : PageModel
             return RedirectToPage("/Index");
         }
 
-        ErrorMessage = result.Errors.FirstOrDefault() ?? "Invalid username or password.";
+        Errors.AddRange(result.Errors);
         return Page();
     }
 }

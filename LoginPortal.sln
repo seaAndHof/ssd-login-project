@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginPortal", "src\LoginPortal\LoginPortal.csproj", "{5E16AC53-DFA4-45B0-A478-267313ABCEF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginPortal.Backend", "src\LoginPortal.Backend\LoginPortal.Backend.csproj", "{BC61D190-8380-43D9-B3FD-82048344E995}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,11 +31,24 @@ Global
 		{5E16AC53-DFA4-45B0-A478-267313ABCEF4}.Release|x64.Build.0 = Release|Any CPU
 		{5E16AC53-DFA4-45B0-A478-267313ABCEF4}.Release|x86.ActiveCfg = Release|Any CPU
 		{5E16AC53-DFA4-45B0-A478-267313ABCEF4}.Release|x86.Build.0 = Release|Any CPU
+		{BC61D190-8380-43D9-B3FD-82048344E995}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC61D190-8380-43D9-B3FD-82048344E995}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC61D190-8380-43D9-B3FD-82048344E995}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BC61D190-8380-43D9-B3FD-82048344E995}.Debug|x64.Build.0 = Debug|Any CPU
+		{BC61D190-8380-43D9-B3FD-82048344E995}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BC61D190-8380-43D9-B3FD-82048344E995}.Debug|x86.Build.0 = Debug|Any CPU
+		{BC61D190-8380-43D9-B3FD-82048344E995}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC61D190-8380-43D9-B3FD-82048344E995}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC61D190-8380-43D9-B3FD-82048344E995}.Release|x64.ActiveCfg = Release|Any CPU
+		{BC61D190-8380-43D9-B3FD-82048344E995}.Release|x64.Build.0 = Release|Any CPU
+		{BC61D190-8380-43D9-B3FD-82048344E995}.Release|x86.ActiveCfg = Release|Any CPU
+		{BC61D190-8380-43D9-B3FD-82048344E995}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5E16AC53-DFA4-45B0-A478-267313ABCEF4} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{BC61D190-8380-43D9-B3FD-82048344E995} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal

@@ -9,13 +9,15 @@
 <body>
     <nav>
         <a asp-page="/Index">Home</a>
-        @if (Context.Session.GetString("user") is null)
+        @if (User.Identity?.IsAuthenticated == true)
         {
-            <a asp-page="/Login">Login</a>
+            <span>@User.Identity.Name</span>
+            <a asp-page="/Logout">Logout</a>
         }
         else
         {
-            <a asp-page="/Logout">Logout</a>
+            <a asp-page="/Login">Login</a>
+            <a asp-page="/Signup">Sign Up</a>
         }
     </nav>
     <main>

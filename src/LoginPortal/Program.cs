@@ -1,14 +1,50 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using LoginPortal.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpClient<AuthService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Backend:BaseUrl"]!);
+});
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+            NameClaimType = JwtRegisteredClaimNames.Name,
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                context.Token = context.Request.Cookies["jwt"];
+                return Task.CompletedTask;
+            }
+        };
+    });
+
 builder.Services.AddRazorPages();
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession();
 
 var app = builder.Build();
 
 app.UseStaticFiles();
 app.UseRouting();
-app.UseSession();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();

@@ -9,7 +9,10 @@ public class IndexModel : PageModel
 
     public IActionResult OnGet()
     {
-        Username = HttpContext.Session.GetString("user");
-        return Username is null ? RedirectToPage("/Login") : Page();
+        if (User.Identity?.IsAuthenticated != true)
+            return RedirectToPage("/Login");
+
+        Username = User.Identity.Name;
+        return Page();
     }
 }
