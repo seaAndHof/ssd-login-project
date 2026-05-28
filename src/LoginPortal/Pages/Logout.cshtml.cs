@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -5,9 +6,16 @@ namespace LoginPortal.Pages;
 
 public class LogoutModel : PageModel
 {
-    public IActionResult OnGet()
+    private readonly SignInManager<IdentityUser> _signInManager;
+
+    public LogoutModel(SignInManager<IdentityUser> signInManager)
     {
-        HttpContext.Session.Clear();
+        _signInManager = signInManager;
+    }
+
+    public async Task<IActionResult> OnGetAsync()
+    {
+        await _signInManager.SignOutAsync();
         return RedirectToPage("/Login");
     }
 }

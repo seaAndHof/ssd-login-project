@@ -6,6 +6,11 @@
 
 <h1>Login</h1>
 
+@if (Model.ErrorMessage is not null)
+{
+    <p class="error">@Model.ErrorMessage</p>
+}
+
 <form method="post">
     <label>
         Username
@@ -17,3 +22,5 @@
     </label>
     <button type="submit">Sign in</button>
 </form>
+
+<p>Don't have an account? <a asp-page="/Signup">Sign up</a></p>
