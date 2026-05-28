@@ -6,6 +6,11 @@
 
 ---
 
+## First Run
+To run this project the first time, you wont get it working without setting up the database.
+
+Run the 'dotnet ef database update' command to get the database up and running.
+
 ## 1. Introduction and problem
 
 ## 2. Theory
