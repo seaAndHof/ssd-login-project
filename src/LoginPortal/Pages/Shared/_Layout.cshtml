@@ -12,6 +12,10 @@
         @if (User.Identity?.IsAuthenticated == true)
         {
             <span>@User.Identity.Name</span>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-page="/Admin">Admin</a>
+            }
             <a asp-page="/Logout">Logout</a>
         }
         else

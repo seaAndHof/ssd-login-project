@@ -28,6 +28,7 @@ public class AuthController : ControllerBase
         if (!result.Succeeded)
             return BadRequest(new { errors = result.Errors.Select(e => e.Description) });
 
+        await _userManager.AddToRoleAsync(user, "User");
         var roles = await _userManager.GetRolesAsync(user);
         var token = _jwtService.GenerateToken(user.Id, user.UserName!, roles);
 
@@ -55,7 +56,15 @@ public class AuthController : ControllerBase
         {
             userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
             username = User.Identity?.Name,
+            roles = User.FindAll(System.Security.Claims.ClaimTypes.Role).Select(c => c.Value),
         });
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("admin")]
+    public IActionResult Admin()
+    {
+        return Ok(new { message = "You have admin access." });
     }
 }
 
