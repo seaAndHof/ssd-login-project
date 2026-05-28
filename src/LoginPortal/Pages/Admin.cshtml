@@ -5,4 +5,24 @@
 }
 
 <h1>Admin Panel</h1>
-<p>Welcome, @User.Identity?.Name. You have the Admin role.</p>
+
+<h2>Users</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Roles</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@string.Join(", ", user.Roles)</td>
+            </tr>
+        }
+    </tbody>
+</table>

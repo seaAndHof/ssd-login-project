@@ -61,10 +61,19 @@ public class AuthController : ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpGet("admin")]
-    public IActionResult Admin()
+    [HttpGet("admin/users")]
+    public async Task<IActionResult> GetUsers()
     {
-        return Ok(new { message = "You have admin access." });
+        var users = _userManager.Users.ToList();
+        var result = new List<object>();
+
+        foreach (var user in users)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            result.Add(new { user.Id, user.UserName, user.Email, Roles = roles });
+        }
+
+        return Ok(result);
     }
 }
 

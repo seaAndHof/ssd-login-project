@@ -7,10 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient<AuthService>(client =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["Backend:BaseUrl"]!);
-});
+builder.Services.AddBackendServices(builder.Configuration);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
