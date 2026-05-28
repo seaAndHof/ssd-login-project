@@ -25,6 +25,13 @@ Run the 'dotnet ef database update' command to get the database up and running.
 
 ### 2.5 Role-Based Access Control (RBAC)
 
+This project is using Role-Based Access Control to dictate which roles has access to certain areas of the system.
+In this project this is done using claims that exist within the JWT, which the frontend can read and see which role
+that the authenticated user has.
+
+Any requests to the backend are also being role checked and authorizing whether or not the user has permission to
+access the attempted endpoint. Access denied is shown with a 403 Forbidden error.
+
 ### 2.6 Threat modeling the login flow (STRIDE)
 
 ### 2.7 Discussion points for exam
