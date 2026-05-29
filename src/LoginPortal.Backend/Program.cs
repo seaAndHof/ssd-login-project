@@ -1,7 +1,9 @@
 using System.Text;
 using LoginPortal.Backend.Data;
 using LoginPortal.Backend.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -33,6 +35,24 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
+    })
+    .AddCookie("ExternalCookies")
+    .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+    {
+        options.SignInScheme = "ExternalCookies";
+        options.Authority = builder.Configuration["Oidc:Authority"];
+        options.ClientId = builder.Configuration["Oidc:ClientId"];
+        options.ClientSecret = builder.Configuration["Oidc:ClientSecret"];
+        options.CallbackPath = builder.Configuration["Oidc:CallbackPath"] ?? "/signin-oidc";
+        options.ResponseType = "code";
+        options.UsePkce = true;
+        options.PushedAuthorizationBehavior = Microsoft.AspNetCore.Authentication.OpenIdConnect.PushedAuthorizationBehavior.Disable;
+        options.SaveTokens = true;
+        options.GetClaimsFromUserInfoEndpoint = true;
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        options.Scope.Add("email");
+        options.RequireHttpsMetadata = false;
     });
 
 builder.Services.AddScoped<JwtService>();
