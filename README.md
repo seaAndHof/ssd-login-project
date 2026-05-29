@@ -4,6 +4,8 @@
 
 **Students :** Nicklas Kramer & Anders Hoffmann 
 
+**Repository:** https://github.com/seaAndHof/ssd-login-project
+
 ---
 
 ## First Run
