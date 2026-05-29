@@ -7,9 +7,26 @@
 ---
 
 ## First Run
-To run this project the first time, you wont get it working without setting up the database.
 
-Run the 'dotnet ef database update' command to get the database up and running.
+**1. Database.** The app won't run until the database is set up. Apply the migrations with:
+
+```
+dotnet ef database update
+```
+
+**2. Keycloak (for OAuth2/OIDC login).** Start Keycloak:
+
+```
+docker compose up -d
+```
+
+Then open the admin console at `http://localhost:8080` (login `admin` / `admin`) and:
+
+1. Create a realm named `loginportal`.
+2. In that realm, create a client with Client ID `loginportal-backend`, set **Client authentication** to On (confidential), and add the redirect URI `http://localhost:5256/signin-oidc`.
+3. Copy the client's secret (Credentials tab) into `Oidc:ClientSecret` in `src/LoginPortal.Backend/appsettings.json`.
+
+Add at least one user to the realm so you have something to log in with.
 
 ## 1. Introduction and problem
 
@@ -109,9 +126,7 @@ admin area:
 
 ![RBAC denied screenshot](/screenshots/403.png)
 
-### 2.6 Threat modeling the login flow (STRIDE)
-
-### 2.7 Countermeasures against session hijacking
+### 2.6 Countermeasures against session hijacking
 
 To make a stolen session as hard and as useless as possible, several layers are combined: the JWT cookie is marked
 `HttpOnly` so JavaScript (and therefore XSS payloads) cannot read it, `SameSite=Strict` so it is not sent on cross-site
@@ -121,6 +136,4 @@ alone cannot bypass.
 
 In code the cookie flags are set in `LoginPortal/Pages/Login.cshtml.cs` (`SetJwtCookie`), and signature/lifetime
 validation happens on every request via `AddJwtBearer` in `LoginPortal.Backend/Program.cs`.
-
-## 3. Conclusion
 
