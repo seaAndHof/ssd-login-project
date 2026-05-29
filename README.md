@@ -25,6 +25,22 @@ like OAuth2 and MFA?
 
 ### 2.1 Federated authentication: OAuth2 and OpenID Connect
 
+Users can log in through **Keycloak** instead of the portal's own login. We use OpenID Connect with
+the OAuth2 Authorization Code flow and PKCE, asking for the `openid`, `profile` and `email` scopes.
+
+The user clicks "Login With KeyCloak", we redirect them to Keycloak to sign in, and
+Keycloak redirects back to our callback. The first time, we create a local `IdentityUser` for them
+and give them the `User` role. After that the backend hands out its own JWT, exactly like a normal
+login, so Zero Trust and RBAC work the same no matter how the user signed in.
+
+It's implemented with `AddOpenIdConnect` in `LoginPortal.Backend/Program.cs`, the
+redirect and callback are `ExternalLogin`/`ExternalCallback` in
+`LoginPortal.Backend/Controllers/AuthController.cs`, the button is in `LoginPortal/Pages/Login.cshtml`,
+and the JWT cookie is set in `LoginPortal/Pages/Account/External.cshtml.cs`. The Keycloak login
+screen:
+
+![OIDC Keycloak login screenshot](/screenshots/oidc.png)
+
 ### 2.2 Cryptographic primitives: password hashing and JWT signing
 This project uses EF Core identity to manage users. EF Core Identity automatically hashses any passwords using the
 PBKDF2 algorithm with the HMAC-SHA256 function and uses a 128 bit random salt. This way no passwords are ever stored
@@ -57,6 +73,24 @@ the JWT is missing or invalid:
 ![Zero Trust 401 screenshot](/screenshots/401.png)
 
 ### 2.4 Multi-Factor Authentication (MFA/2FA)
+
+Users can add a second factor with an authenticator app (Apple Keychain, Microsoft
+Authenticator, etc.). We use ASP.NET Core Identity's built-in TOTP support, and each user's secret
+is stored in the `AspNetUserTokens` table and only shown once during setup.
+
+To turn it on, the user opens the MFA setup page, scans the QR code/secret into their app, and types
+back a 6-digit code to confirm. After that, entering the right password isn't enough on its own: the
+backend gives back a short-lived token, and the user has to enter a valid
+6-digit code before they get the normal 1 hour JWT.
+
+It's implemented with the setup endpoints in `LoginPortal.Backend/Controllers/MfaController.cs`, the login
+check and verify step are in `LoginPortal.Backend/Controllers/AuthController.cs`, and the pending
+token is handled by `GenerateMfaPendingToken`/`ValidateMfaPendingToken` in
+`LoginPortal.Backend/Services/JwtService.cs`. The pages are
+`LoginPortal/Pages/Account/MfaSetup.cshtml` (turn on) and `LoginPortal/Pages/Account/Mfa.cshtml`
+(enter code at login). The code prompt at login, next to the matching code in the authenticator app:
+
+![MFA verification screenshot](/screenshots/mfa.png)
 
 ### 2.5 Role-Based Access Control (RBAC)
 
